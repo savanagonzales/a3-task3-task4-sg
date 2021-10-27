@@ -1,0 +1,28 @@
+---
+title: "Urchins Data"
+author: "Van Gonzales"
+date: "10/27/2021"
+output: html_document
+---
+## Overview 
+We are exploring the records of red and purple urchins provided by the Santa Barbara Coastal Long Term Ecological Research program. We will use the observations at five different sites to make size comparisons, take counts, and create visualizations for the data.
+
+#### Data Citation: 
+Reed, D. 2020. SBC LTER: Reef: Long-term experiment: Kelp removal: Urchin size frequency distribution ver 20. Environmental Data Initiative. https://doi.org/10.6073/pasta/5a1e9ef03aa47bd2225c0bb98a02a63b. 
+
+### Setup
+```{r setup, include=TRUE, message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+library(tidyverse)
+library(janitor)
+library(here)
+
+```
+
+### Read in Data
+```{r}
+urchins <- read_csv(here("data", "urchins.csv"))
+```
+
+### Section 1: Size Comparisons 
+

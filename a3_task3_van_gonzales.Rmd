@@ -31,17 +31,34 @@ urchins_clean <- urchins %>%
 ### Section 1: Size Comparisons 
 ```{r}
 ggplot(data = urchins_clean, aes(x = size)) +
-  geom_histogram(size = 10, aes(fill = common_name)) +
+  geom_histogram(bins = 10, aes(fill = common_name)) +
   facet_wrap(~common_name)+
   labs(x = "Urchin Size (cm)", y = "Urchin Count", 
        title = "Purple and Red Urchin Size Comparison", 
        fill = "Urchin Type") +
   scale_fill_manual(values = c("purple", "red"))
 ```
+**Figure 1- Size Comparison of Purple and Red Sea Urchins** 
+The purple colored histogram (left) is representative of the size distribution of purple urchins while the red colored histogram (right) is representative of the size distribution of the red urchins. The data show that the purple urchins tend to have higher counts of smaller sized urchins. On the other hand, the red urchins data contain more spread out counts that range from 4cm to 12cm, with many of the observations falling around 6cm to 8cm.
 
 ### Descriptive Statistics
 ```{r}
-descriptive_stats <- urchins_clean %>% 
-  
+urchins_stats <- urchins_clean %>% 
+  group_by(common_name) %>% 
+  summarize(mean_size = mean(size),
+            median_size = median(size),
+            sd_size = sd(size),
+            sample_size = n())
+
+urchins_stats %>% 
+  kable(col.names = c("Common Name",
+                      "Mean Size (cm)",
+                      "Median Size (cm)",
+                      "Standard Deviation (cm)",
+                      "Sample Size (n)"), 
+        caption = "Figure 2. Red and purple sea urchin size statistics. The mean and median sizes of each urchin type were calculated, along with the standard deviation. The sample size for each was also included.") %>% 
+  kable_classic(full_width = F, html_font = "Cambria")
+
+
 ```
 

@@ -17,6 +17,7 @@ library(tidyverse)
 library(janitor)
 library(here)
 library(kableExtra)
+library(lubridate)
 
 ```
 
@@ -61,4 +62,44 @@ urchins_stats %>%
 
 
 ```
+
+The data values described in Figure 2 seem to suggest that on average, red urchins tend to be larger in size compared to purple urchins. The red urchin mean size is 175% the mean size for the purple urchins. The spread for the red urchins is greater than the that of the purple urchins, as displayed by the larger standard deviation for the red urchins.
+
+### Section 2: Purple Urchins Count by Site & Year
+```{r}
+purple_urchins <- urchins_clean %>% 
+  filter(common_name == "Purple Urchin") %>% 
+  mutate(date = mdy(date)) %>% 
+  mutate(year = year(date)) %>% 
+  mutate(site_full = case_when(
+    site == "NAPL" ~ "Naples Reef",
+    site == "AQUE" ~ "Arroyo Quemado Reef",
+    site == "CARP" ~ "Carpenteria Reef",
+    site == "MOHK" ~ "Mohawk Reef",
+    site == "IVEE" ~ "Isla Vista Reef"))
+```
+
+```{r}
+purple_table <- purple_urchins %>% 
+  count(site_full, year)
+```
+
+#### Graph of Purple Urchins
+```{r}
+ggplot(data = purple_table, aes(x = year, y = n)) +
+  geom_bar(aes(fill = site_full),
+           stat = "identity", color = "black") +
+  facet_wrap(~ site_full, scale = "free") +
+  theme(axis.text.x = element_text(angle = 45)) +
+  labs(x = "Year", y = "Urchin Count",
+       title = "Population of Purple Sea Urchins by Site",
+       fill = "Site",
+       caption = "Figure 3. Purple urchin counts recorded at each site over time. 
+       Each site experienced a decline in purple urchin count from the year 2008 to 2020.")
+```
+This graph very could very well reflect the changes in purple urchin population, however we would need more information. For example, I would want to know how long they were taking counts for each year, if they surveyed the entirety of the each site each year, and we need to account for human error. These graphs are just summary statistics, they do not show thee whole picture. Even a decline in surveyors over the years could lead to what would look like a decrease in population, though it may just be less people counting. 
+
+
+
+
 

@@ -31,7 +31,7 @@ urchins_clean <- urchins %>%
 
 ### Section 1: Size Comparisons 
 ```{r}
-ggplot(data = urchins_clean, aes(x = size)) +
+ggplot(data = urchins_clean, aes(x = size)) + #histogram plotting
   geom_histogram(bins = 10, aes(fill = common_name)) +
   facet_wrap(~common_name)+
   labs(x = "Urchin Size (cm)", y = "Urchin Count", 
@@ -45,20 +45,20 @@ The purple colored histogram (left) is representative of the size distribution o
 ### Descriptive Statistics
 ```{r}
 urchins_stats <- urchins_clean %>% 
-  group_by(common_name) %>% 
+  group_by(common_name) %>% #grouping for summary table
   summarize(mean_size = round(mean(size, 2)),
             median_size = round(median(size), 2),
             sd_size = round(sd(size), 2),
             sample_size = n())
 
 urchins_stats %>% 
-  kable(col.names = c("Common Name",
+  kable(col.names = c("Common Name", #naming columns for summary table
                       "Mean Size (cm)",
                       "Median Size (cm)",
                       "Standard Deviation (cm)",
                       "Sample Size (n)"), 
         caption = "Figure 2. Red and purple sea urchin size statistics. The mean and median sizes of each urchin type were calculated, along with the standard deviation. The sample size for each was also included.") %>% 
-  kable_classic(full_width = F, html_font = "Cambria")
+  kable_classic(full_width = F, html_font = "Cambria") #kable styling
 
 
 ```
@@ -69,7 +69,7 @@ The data values described in Figure 2 seem to suggest that on average, red urchi
 ```{r}
 purple_urchins <- urchins_clean %>% 
   filter(common_name == "Purple Urchin") %>% 
-  mutate(date = mdy(date)) %>% 
+  mutate(date = mdy(date)) %>%  #mutating to change date format
   mutate(year = year(date)) %>% 
   mutate(site_full = case_when(
     site == "NAPL" ~ "Naples Reef",
@@ -87,10 +87,10 @@ purple_table <- purple_urchins %>%
 #### Visualization of Purple Urchins
 ```{r}
 ggplot(data = purple_table, aes(x = year, y = n)) +
-  geom_bar(aes(fill = site_full),
+  geom_bar(aes(fill = site_full), #creating bar plot
            stat = "identity", color = "black") +
   facet_wrap(~ site_full, scale = "free") +
-  theme(axis.text.x = element_text(angle = 45)) +
+  theme(axis.text.x = element_text(angle = 45)) + #tilting to fit in years
   labs(x = "Year", y = "Urchin Count",
        title = "Population of Purple Sea Urchins by Site",
        fill = "Site",
@@ -98,6 +98,8 @@ ggplot(data = purple_table, aes(x = year, y = n)) +
        Each site experienced a decline in purple urchin count from the year 2008 to 2020.")
 ```
 This graph very could very well reflect the changes in purple urchin population, however we would need more information. For example, I would want to know how long they were taking counts for each year, if they surveyed the entirety of the each site each year, and we need to account for human error. These graphs are just summary statistics, they do not show thee whole picture. Even a decline in surveyors over the years could lead to what would look like a decrease in population, though it may just be less people counting. 
+
+
 
 
 

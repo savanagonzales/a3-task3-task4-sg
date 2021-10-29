@@ -1,0 +1,92 @@
+---
+title: "Untitled"
+author: "Van Gonzales"
+date: "10/29/2021"
+output: html_document
+---
+## Overview
+Using this data we will compare the mean sizes of purple urchins in the control treatments and annual treatments within sections of the Naples Reef in 2010.
+
+### Data Citation
+ Reed, D. 2020. SBC LTER: Reef: Long-term experiment: Kelp removal: Urchin size frequency distribution ver 20. Environmental Data Initiative. https://doi.org/10.6073/pasta/5a1e9ef03aa47bd2225c0bb98a02a63b. 
+ 
+### Setup
+```{r setup, include=FALSE, message = FALSE, warning = TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse) #attaching packages
+library(here)
+library(janitor)
+library(kableExtra)
+library(lubridate)
+
+```
+
+### Reading in & Cleaning up the Data
+```{r}
+urchins <- read_csv(here("data", "urchins.csv")) #read in data
+
+urchins_clean <- urchins %>% #putting column names into lower case
+  clean_names()
+```
+
+### Wrangling Data
+Only including purple urchins from the Naples Reef observed in 2010
+```{r}
+purple_naples <- urchins_clean %>% 
+  filter(site == "NAPL", 
+         common_name == "Purple Urchin") %>% #filter for purple & NAPL
+  mutate(date = mdy(date)) %>% #use mdy() to convert to date class
+  mutate(year = year(date)) %>% 
+  filter(year == "2010") %>% #filter for only 2010 data
+  mutate(treatment = case_when(
+    treatment == "ANNUAL" ~ "Annual",
+    treatment == "CONTROL" ~ "Control")) #do this for easier organization
+```
+
+### Data Visualization
+Creating a histogram and a qq plot by treatment, to display purple urchins in 2010.
+```{r}
+ggplot(data = purple_naples, aes(x = size)) + #creating ggplot
+  geom_histogram(bins = 10, color = "purple",
+                 aes(fill = treatment)) +
+                   facet_wrap(~ treatment) +
+                   labs(x = "Size (cm)", y = "Count", 
+                    title = "Purple Sea Urchin Size (cm) by Treatment",
+                    fill = "Treatment Type") #all customizations
+
+ggplot(data = purple_naples, aes(sample = size)) +
+  stat_qq() + #creating qq plot
+  geom_qq_line() +
+  facet_wrap(~treatment)
+```
+Data Analysis: Based on the graphs, the distributions look very similar. There doesn't seem to be a huge difference between the two treatment types.
+
+```{r}
+urchin_treatment <- purple_naples %>% 
+  group_by(treatment) %>%  #grouping for summary table
+  summarize(mean_size = round(mean(size), 2), median_size = median(size),
+            sd_size = round(sd(size), 2),
+            sample_size = n())
+
+urchin_treatment %>% 
+  kable(col.names = c("Treatment", #creating column names summary table
+                      "Mean Size (cm)",
+                      "Median Size (cm)",
+                      "Standard Deviation (cm)",
+                      "Sample Size (n)"),
+        caption = "Figure 1. Purple sea urchin size (cm) by treatment type on Naples reef in 2010.") %>% 
+ kable_classic(full_width = F, html_font = "Cambria") #just styling
+```
+
+
+
+
+
+
+
+
+
+
+
+
+

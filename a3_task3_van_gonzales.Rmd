@@ -84,7 +84,7 @@ purple_table <- purple_urchins %>%
   count(site_full, year)
 ```
 
-#### Graph of Purple Urchins
+#### Visualization of Purple Urchins
 ```{r}
 ggplot(data = purple_table, aes(x = year, y = n)) +
   geom_bar(aes(fill = site_full),

@@ -16,13 +16,32 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 library(tidyverse)
 library(janitor)
 library(here)
+library(kableExtra)
 
 ```
 
-### Read in Data
+### Reading In & Cleaning Data
 ```{r}
 urchins <- read_csv(here("data", "urchins.csv"))
+
+urchins_clean <- urchins %>% 
+  clean_names()
 ```
 
 ### Section 1: Size Comparisons 
+```{r}
+ggplot(data = urchins_clean, aes(x = size)) +
+  geom_histogram(size = 10, aes(fill = common_name)) +
+  facet_wrap(~common_name)+
+  labs(x = "Urchin Size (cm)", y = "Urchin Count", 
+       title = "Purple and Red Urchin Size Comparison", 
+       fill = "Urchin Type") +
+  scale_fill_manual(values = c("purple", "red"))
+```
+
+### Descriptive Statistics
+```{r}
+descriptive_stats <- urchins_clean %>% 
+  
+```
 

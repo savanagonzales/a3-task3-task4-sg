@@ -45,9 +45,9 @@ The purple colored histogram (left) is representative of the size distribution o
 ```{r}
 urchins_stats <- urchins_clean %>% 
   group_by(common_name) %>% 
-  summarize(mean_size = mean(size),
-            median_size = median(size),
-            sd_size = sd(size),
+  summarize(mean_size = round(mean(size, 2)),
+            median_size = round(median(size), 2),
+            sd_size = round(sd(size), 2),
             sample_size = n())
 
 urchins_stats %>% 
